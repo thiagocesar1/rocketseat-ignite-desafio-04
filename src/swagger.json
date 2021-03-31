@@ -1,0 +1,243 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Atlas",
+        "description": "Essa é uma documentação sobre a Atlas API.",
+        "version": "1.0.0",
+        "contact": {
+            "email": "thiago.cesaralvares@gmail.com"
+        }
+    },
+    "paths":{
+        "/users":{
+            "post": {
+                "tags": ["users"],
+                "summary": "Cria um novo usuário",
+                "requestBody": {
+                    "content": {
+                        "application/json":{
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                },
+                                "example": {
+                                    "name": "Thiago",
+                                    "email": "thiago@unila.br"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201":{
+                        "description": "Operação realizada com sucesso.",
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "admin": {
+                                            "type": "boolean"
+                                        },
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "created_at": {
+                                            "type": "string"
+                                        },
+                                        "updated_at": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "admin": true,
+                                        "id": "75442486-0878-440c-9db1-a7006c25a39f",
+                                        "name": "Thiago",
+                                        "email": "thiago@unila.br",
+                                        "created_at": "2021-09-21T22:55:22.99ZZ",
+                                        "updated_at": "2021-09-21T23:51:24.99ZZ"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Esse e-mail já foi utilizado."
+                    }
+                }
+            },
+            "get": {
+                "tags": ["users"],
+                "summary": "Retorna todos os usuários",
+                "description": "Somente usuário admin pode acessar",
+                "parameters": [
+                    {
+                      "name": "user_id",
+                      "in": "header",
+                      "required": true,
+                      "style": "form",
+                      "schema": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    }
+                  ],
+                "responses": {
+                    "200":{
+                        "description": "Operação realizada com sucesso.",
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "type": "object[]",
+                                    "example": [
+                                        {
+                                            "admin": true,
+                                            "id": "75442486-0878-440c-9db1-a7006c25a39f",
+                                            "name": "Thiago",
+                                            "email": "thiago@unila.br",
+                                            "created_at": "2021-09-21T22:55:22.99ZZ",
+                                            "updated_at": "2021-09-21T23:51:24.99ZZ"
+                                        },
+                                        {
+                                            "admin": false,
+                                            "id": "75442486-0878-440c-9db1-a7006c25a39f",
+                                            "name": "Cesar",
+                                            "email": "cesar@unila.br",
+                                            "created_at": "2021-09-21T22:55:22.99ZZ",
+                                            "updated_at": "2021-09-21T23:51:24.99ZZ"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Usuário sem permissão ou Usuário não encontrado.",
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "type": "object",
+                                    "example":{
+                                            "error": "You need to be an administrator to list all users."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}":{
+            "get": {
+                "tags": ["users"],
+                "summary": "Retorna um usuário específico",
+                "parameters": [
+                    {
+                      "name": "user_id",
+                      "in": "path",
+                      "required": true,
+                      "style": "form"
+                    }
+                  ],
+                "responses": {
+                    "200":{
+                        "description": "Operação realizada com sucesso.",
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "type": "object",
+                                    "example":
+                                        {
+                                            "admin": true,
+                                            "id": "75442486-0878-440c-9db1-a7006c25a39f",
+                                            "name": "Thiago",
+                                            "email": "thiago@unila.br",
+                                            "created_at": "2021-09-21T22:55:22.99ZZ",
+                                            "updated_at": "2021-09-21T23:51:24.99ZZ"
+                                        }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Usuário não encontrado.",
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "type": "object",
+                                    "example":{
+                                            "error": "User not found."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/admin":{
+            "patch": {
+                "tags": ["users"],
+                "summary": "Torna admin um usuário",
+                "parameters": [
+                    {
+                      "name": "user_id",
+                      "in": "header",
+                      "required": true,
+                      "style": "form",
+                      "schema": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    }
+                  ],
+                "responses": {
+                    "200":{
+                        "description": "Operação realizada com sucesso.",
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "type": "object",
+                                    "example":
+                                        {
+                                            "admin": true,
+                                            "id": "75442486-0878-440c-9db1-a7006c25a39f",
+                                            "name": "Thiago",
+                                            "email": "thiago@unila.br",
+                                            "created_at": "2021-09-21T22:55:22.99ZZ",
+                                            "updated_at": "2021-09-21T23:51:24.99ZZ"
+                                        }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado.",
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "type": "object",
+                                    "example":{
+                                            "error": "User not found."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
